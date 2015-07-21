@@ -39,6 +39,9 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.squareup.okhttp.ConnectionSpec;
+import com.squareup.okhttp.TlsVersion;
+
 import io.grpc.ChannelImpl;
 import io.grpc.stub.StreamObserver;
 import io.grpc.stub.StreamRecorder;
@@ -105,6 +108,24 @@ public final class InteropTester extends AsyncTask<Void, Void, String> {
         throw new RuntimeException(e);
       }
     }
+
+    ConnectionSpec spec =
+        new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+            .cipherSuites(
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+                "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
+                "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
+                "TLS_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_RSA_WITH_AES_256_CBC_SHA"
+            )
+//            .tlsVersions(TlsVersion.TLS_1_2, TlsVersion.TLS_1_1)
+            .build();
+
+    channelBuilder.connectionSpec(spec);
 
     channel = channelBuilder.build();
     blockingStub = TestServiceGrpc.newBlockingStub(channel);

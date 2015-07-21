@@ -39,7 +39,9 @@ import io.grpc.testing.TestUtils;
 import io.grpc.transport.netty.GrpcSslContexts;
 import io.grpc.transport.netty.NettyServerBuilder;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SupportedCipherSuiteFilter;
 
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -135,12 +137,24 @@ public class TestServiceServer {
     SslContext sslContext = null;
     if (useTls) {
       sslContext = GrpcSslContexts.forServer(
-              TestUtils.loadCert("server1.pem"), TestUtils.loadCert("server1.key")).build();
+              TestUtils.loadCert("server1.pem"), TestUtils.loadCert("server1.key"))
+          .ciphers(Arrays.asList(new String[]{
+              "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+              "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+              "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+              "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+              "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
+              "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
+              "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
+              "TLS_RSA_WITH_AES_128_CBC_SHA",
+              "TLS_RSA_WITH_AES_256_CBC_SHA"
+          }), SupportedCipherSuiteFilter.INSTANCE)
+          .build();
     }
     server = NettyServerBuilder.forPort(port)
         .sslContext(sslContext)
         .addService(ServerInterceptors.intercept(
-            TestServiceGrpc.bindService(new TestServiceImpl(executor)),
+            io.grpc.testing.integration.TestServiceGrpc.bindService(new TestServiceImpl(executor)),
             TestUtils.echoRequestHeadersInterceptor(Util.METADATA_KEY)))
         .build().start();
   }
