@@ -48,7 +48,7 @@ public class GrpcSslContexts {
   private GrpcSslContexts() {}
 
   private static ApplicationProtocolConfig DEFAULT_APN = new ApplicationProtocolConfig(
-          Protocol.ALPN,
+          Protocol.NPN,
           SelectorFailureBehavior.FATAL_ALERT,
           SelectedListenerFailureBehavior.FATAL_ALERT,
           "h2",

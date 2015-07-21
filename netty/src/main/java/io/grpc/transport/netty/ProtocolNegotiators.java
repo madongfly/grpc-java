@@ -82,13 +82,13 @@ public final class ProtocolNegotiators {
     Preconditions.checkNotNull(sslEngine, "sslEngine");
 
     // If we're using Jetty ALPN, verify that it is configured properly.
-    if (!(sslEngine instanceof OpenSslEngine)) {
-      try {
-        JettyAlpnVerifier.verifyJettyAlpn();
-      } catch (JettyAlpnVerifier.NotFoundException e) {
-        throw new IllegalArgumentException(e);
-      }
-    }
+//    if (!(sslEngine instanceof OpenSslEngine)) {
+//      try {
+//        JettyAlpnVerifier.verifyJettyAlpn();
+//      } catch (JettyAlpnVerifier.NotFoundException e) {
+//        throw new IllegalArgumentException(e);
+//      }
+//    }
 
     return new SslHandler(sslEngine, false);
   }
@@ -104,13 +104,13 @@ public final class ProtocolNegotiators {
     Preconditions.checkNotNull(inetAddress, "inetAddress");
 
     // If we're using Jetty ALPN, verify that it is configured properly.
-    if (!(sslContext instanceof OpenSslContext)) {
-      try {
-        JettyAlpnVerifier.verifyJettyAlpn();
-      } catch (JettyAlpnVerifier.NotFoundException e) {
-        throw new IllegalArgumentException(e);
-      }
-    }
+//    if (!(sslContext instanceof OpenSslContext)) {
+//      try {
+//        JettyAlpnVerifier.verifyJettyAlpn();
+//      } catch (JettyAlpnVerifier.NotFoundException e) {
+//        throw new IllegalArgumentException(e);
+//      }
+//    }
 
     return new ProtocolNegotiator() {
       @Override

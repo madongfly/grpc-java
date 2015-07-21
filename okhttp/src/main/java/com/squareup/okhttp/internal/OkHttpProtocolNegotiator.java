@@ -169,6 +169,7 @@ public class OkHttpProtocolNegotiator {
     @Override
     public String negotiate(SSLSocket sslSocket, String hostname, List<Protocol> protocols)
         throws IOException {
+      System.err.println("~~~ negotiating through type: " + tlsExtensionType);
       // First check if a protocol has already been selected, since it's possible that the user
       // provided SSLSocketFactory has already done the handshake when creates the SSLSocket.
       String negotiatedProtocol = getSelectedProtocol(sslSocket);
@@ -211,6 +212,7 @@ public class OkHttpProtocolNegotiator {
           byte[] alpnResult =
               (byte[]) GET_ALPN_SELECTED_PROTOCOL.invokeWithoutCheckedException(socket);
           if (alpnResult != null) {
+            System.err.println("~~~ Connected through ALPN");
             return new String(alpnResult, Util.UTF_8);
           }
         } catch (Exception e) {
@@ -224,6 +226,7 @@ public class OkHttpProtocolNegotiator {
           byte[] npnResult =
               (byte[]) GET_NPN_SELECTED_PROTOCOL.invokeWithoutCheckedException(socket);
           if (npnResult != null) {
+            System.err.println("~~~ Connected through NPN");
             return new String(npnResult, Util.UTF_8);
           }
         } catch (Exception e) {
